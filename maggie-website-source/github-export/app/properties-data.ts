@@ -1,0 +1,87 @@
+export const properties = [
+  {
+    "slug": "225-metairie-lane",
+    "address": "225 Metairie Lane",
+    "city": "Southlake",
+    "zip": "76092",
+    "price": "$2,899,900",
+    "beds": 5,
+    "baths": 6,
+    "area": "5,333",
+    "image": "https://dlajgvw9htjpb.cloudfront.net/cms/610d696c-fbf5-4a24-8104-ac4c87754cfb/21293586/-8693235035437482233.jpg",
+    "description": "New construction in Southlake’s Metairie community, with a greenbelt outlook.",
+    "source": "https://www.zillow.com/homedetails/225-Metairie-Ln-Southlake-TX-76092/443056214_zpid/",
+    "mls": "21293586"
+  },
+  {
+    "slug": "2210-cedar-elm-terrace",
+    "address": "2210 Cedar Elm Terrace",
+    "city": "Westlake",
+    "zip": "76262",
+    "price": "$3,990,000",
+    "beds": 3,
+    "baths": 6,
+    "area": "5,590",
+    "image": "https://dlajgvw9htjpb.cloudfront.net/cms/610d696c-fbf5-4a24-8104-ac4c87754cfb/21340039/8861954210552033466.jpg",
+    "description": "A custom villa in the gated Vaquero neighborhood, overlooking the eighth fairway.",
+    "source": "https://www.zillow.com/homedetails/2210-Cedar-Elm-Ter-Westlake-TX-76262/97691401_zpid/",
+    "mls": "21340039"
+  },
+  {
+    "slug": "2021-granada-trail",
+    "address": "2021 Granada Trail",
+    "city": "Westlake",
+    "zip": "76262",
+    "price": "$4,349,000",
+    "beds": 4,
+    "baths": 7,
+    "area": "7,101",
+    "image": "https://dlajgvw9htjpb.cloudfront.net/cms/610d696c-fbf5-4a24-8104-ac4c87754cfb/21312000/2050629402870023225.jpg",
+    "description": "A spacious residence in the gated Granada community on approximately 0.62 acres.",
+    "source": "https://www.zillow.com/homedetails/2021-Granada-Trl-Roanoke-TX-76262/245151469_zpid/",
+    "mls": "21312000"
+  },
+  {
+    "slug": "2-paigebrooke",
+    "address": "2 Paigebrooke",
+    "city": "Westlake",
+    "zip": "76262",
+    "price": "$6,500,000",
+    "beds": 5,
+    "baths": 7,
+    "area": "7,638",
+    "image": "https://dlajgvw9htjpb.cloudfront.net/cms/610d696c-fbf5-4a24-8104-ac4c87754cfb/21234052/-3161421399909592790.jpg",
+    "description": "A two-acre estate with a courtyard, guest casita, pool and outdoor entertaining spaces.",
+    "source": "https://www.zillow.com/homedetails/2-Paigebrooke-Westlake-TX-76262/97733209_zpid/",
+    "mls": "21234052"
+  },
+  {
+    "slug": "1408-fountain-grass-court",
+    "address": "1408 Fountain Grass Court",
+    "city": "Westlake",
+    "zip": "76262",
+    "price": "$6,490,000",
+    "beds": 5,
+    "baths": 7,
+    "area": "8,129",
+    "image": "https://dlajgvw9htjpb.cloudfront.net/cms/610d696c-fbf5-4a24-8104-ac4c87754cfb/21339873/-6203570778248989565.jpg",
+    "description": "A custom home in Vaquero designed around indoor and outdoor living, on approximately 0.73 acres.",
+    "source": "https://www.zillow.com/homedetails/1408-Fountain-Grass-Ct-Westlake-TX-76262/97727486_zpid/",
+    "mls": "21339873"
+  },
+  {
+    "slug": "1402-fountain-grass-court",
+    "address": "1402 Fountain Grass Court",
+    "city": "Westlake",
+    "zip": "76262",
+    "price": "$5,795,000",
+    "beds": 5,
+    "baths": 7,
+    "area": "6,773",
+    "image": "https://dlajgvw9htjpb.cloudfront.net/cms/610d696c-fbf5-4a24-8104-ac4c87754cfb/21309436/8932644543204373414.jpg",
+    "description": "A California-inspired home in the gated Vaquero community on approximately 0.49 acres.",
+    "source": "https://www.zillow.com/homedetails/1402-Fountain-Grass-Ct-Westlake-TX-76262/97710683_zpid/",
+    "mls": "21309436"
+  }
+];
+export type Property = (typeof properties)[number];
