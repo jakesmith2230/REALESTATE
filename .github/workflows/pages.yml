@@ -1,0 +1,82 @@
+name: Publish Maggie website
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: maggie-website-source/github-export
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: maggie-website-source/github-export/package-lock.json
+      - name: Prepare static GitHub Pages build
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          fs.writeFileSync('next.config.ts', "export default { output: 'export', trailingSlash: false };\n");
+          fs.writeFileSync('vite.config.ts', "import tailwindcss from '@tailwindcss/postcss';\nimport vinext from 'vinext';\nimport { defineConfig } from 'vite';\nexport default defineConfig({ base: '/REALESTATE/', css: { postcss: { plugins: [tailwindcss()] } }, plugins: [vinext()] });\n");
+          for (const file of ['app/home.tsx', 'app/featured-properties.tsx', 'app/properties/[slug]/property-detail.tsx']) {
+            let s = fs.readFileSync(file, 'utf8');
+            s = s.replace(/src="\/(?!REALESTATE\/)/g, 'src="/REALESTATE/').replace(/href="\/(?!REALESTATE\/)/g, 'href="/REALESTATE/');
+            fs.writeFileSync(file, s);
+          }
+          const featured = 'app/featured-properties.tsx';
+          fs.writeFileSync(featured, fs.readFileSync(featured, 'utf8').replace('href={' + String.fromCharCode(96) + '/properties/', 'href={' + String.fromCharCode(96) + '/REALESTATE/properties/').replace('property.slug}' + String.fromCharCode(96), 'property.slug}/' + String.fromCharCode(96)));
+          const page = 'app/properties/[slug]/page.tsx';
+          if (!fs.readFileSync(page, 'utf8').includes('export function generateStaticParams')) fs.appendFileSync(page, '\nexport function generateStaticParams() { return properties.map(property => ({ slug: property.slug })); }\n');
+          const layout = 'app/layout.tsx';
+          fs.writeFileSync(layout, fs.readFileSync(layout, 'utf8').replace('https://maggie-seipel-southlake.finntexas1.chatgpt.site', 'https://jakesmith2230.github.io/REALESTATE/'));
+          NODE
+      - run: npm ci
+      - run: npm run build
+      - name: Prepare and validate public pages
+        run: |
+          node <<'NODE'
+          const fs = require('fs'), path = require('path');
+          const root = 'dist/client';
+          const propertyPages = fs.readdirSync(path.join(root, 'properties')).filter(file => file.endsWith('.html'));
+          if (propertyPages.length !== 6) throw Error('Expected six property pages');
+          for (const file of propertyPages) {
+            const folder = path.join(root, 'properties', file.slice(0, -5));
+            fs.mkdirSync(folder, { recursive: true });
+            fs.copyFileSync(path.join(root, 'properties', file), path.join(folder, 'index.html'));
+          }
+          fs.writeFileSync(path.join(root, '.nojekyll'), '');
+          for (const file of ['index.html', ...propertyPages.map(file => 'properties/' + file)]) {
+            const html = fs.readFileSync(path.join(root, file), 'utf8');
+            if (!html.includes('Maggie Seipel')) throw Error('Missing website content: ' + file);
+            for (const match of html.matchAll(/(?:src|href)="(\/REALESTATE\/[^"#?]*)/g)) {
+              let local = path.join(root, match[1].slice('/REALESTATE/'.length));
+              if (fs.existsSync(local) && fs.statSync(local).isDirectory()) local = path.join(local, 'index.html');
+              if (!fs.existsSync(local)) throw Error('Broken link: ' + match[1]);
+            }
+          }
+          NODE
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: maggie-website-source/github-export/dist/client
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy website
+        id: deployment
+        uses: actions/deploy-pages@v4
